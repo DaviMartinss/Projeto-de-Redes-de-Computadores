@@ -27,15 +27,27 @@ public class ChatServer {
     
     private void clientConnectionLoop() throws IOException{
         while (true) {            
-           Socket clientSocket = serverSockert.accept();
-           System.out.println("Client "+clientSocket.getRemoteSocketAddress() +" conectou");
-            BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream())); 
-            String msg = in.readLine();
-            System.out.println("Messagem recebida do cliente = " +clientSocket.getRemoteSocketAddress()
-                + ":" +msg);
+           ClientSocket clientSocket = new ClientSocket(serverSockert.accept());
+           
+           new Thread(() -> clientMessageLoop(clientSocket)).start();
+        
         }
     }
+    
+    public void clientMessageLoop(ClientSocket clientSocket){
+        String msg;
+        try{
+            while((msg = clientSocket.getMessage()) != null){
+                if("sair".equalsIgnoreCase(msg))
+                    return;
 
+                System.out.printf("Msg recebida do cliente %s: %s\n",clientSocket.getRemoteSocketAddress(), msg);
+            }
+        } finally{
+            clientSocket.close();
+        }
+    }
+    
     public static void main(String[] args) {
         try{
             ChatServer server = new ChatServer();
