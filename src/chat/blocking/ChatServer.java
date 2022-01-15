@@ -18,6 +18,7 @@ import java.net.Socket;
 public class ChatServer {
     public static final int PORT = 4000;
     private ServerSocket serverSockert;
+    Email emailServer = new Email();
     
     public void start() throws IOException{
         System.out.println("Servidor iniciado na porta "+PORT);
@@ -36,17 +37,37 @@ public class ChatServer {
     
     public void clientMessageLoop(ClientSocket clientSocket){
         String msg;
+        emailServer.setRecebeuEmail(true);
         try{
             while((msg = clientSocket.getMessage()) != null){
-                if("sair".equalsIgnoreCase(msg))
-                    return;
-
-                System.out.printf("Msg recebida do cliente %s: %s\n",clientSocket.getRemoteSocketAddress(), msg);
+                
+                if(msg == null){
+                    emailServer.setRecebeuEmail(false);
+                }else{
+                    // recebeu email
+                    if(msg.contains("Email")){
+                        emailServer.setEnderecoEmail(msg);
+                    }else if(msg.contains("Assunto")){
+                        emailServer.setAssuntoEmail(msg);
+                    }else{
+                        emailServer.setMessagemEmail(msg);
+                    }
+                }
             }
+
+            if(emailServer.isRecebeuEmail()){
+                System.out.println(emailServer.getEnderecoEmail());
+                System.out.println(emailServer.getAssuntoEmail());
+                System.out.println(emailServer.getMessagemEmail());
+            }else{
+                System.out.println("Email não chegou ao Servidor");
+            }
+            
         } finally{
             clientSocket.close();
         }
     }
+    
     
     public static void main(String[] args) {
         try{

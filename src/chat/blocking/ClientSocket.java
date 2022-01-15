@@ -54,6 +54,5 @@ public class ClientSocket {
     public boolean sendMsg(String msg){
         out.println(msg);
         return !out.checkError(); // para saber se de fatoa msg foi enviada
-        
     }
 }

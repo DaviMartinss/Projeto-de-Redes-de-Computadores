@@ -9,10 +9,13 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import static java.lang.System.console;
 import java.net.Socket;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+
 /**
  *
  * @author Davi
@@ -36,12 +39,40 @@ public class ChatClient {
     
     private void messageLoop() throws IOException{
         String msg ;
+        Email email = new Email();
+        boolean cancela = false;
+        
         do{
-            System.out.print("Digite uma mensagem (ou sair para finalizar): ");
-            msg = scanner.nextLine();
+            System.out.print("Endereço email que vai enviar: ");
+            email.setEnderecoEmail(scanner.nextLine());
+            System.out.print("Assunto: ");
+            email.setAssuntoEmail(scanner.nextLine());
+            System.out.print("Mensagem: ");
+            email.setMessagemEmail(scanner.nextLine());
             
-            out.println(msg); // envia a mensagem
-        }while (!msg.equalsIgnoreCase("sair"));
+            System.out.println("Você deseja cancelar o envio do Email? Sim/Não");
+           
+            email.setCancelaEmail(scanner.nextLine());
+            
+            
+            if(email.getCancelaEmail().equalsIgnoreCase("SIM")){
+                cancela = true;
+                System.out.println("Envio cancelado");
+            }else{
+                System.out.println("email: "+email.getEnderecoEmail());
+                out.println(email.getEnderecoEmail()); // envia a mensagem
+                
+                //System.out.println("assunto: "+email.getAssuntoEmail());
+                out.println(email.getAssuntoEmail()); // envia a mensagem
+                
+                //System.out.println("corpo: "+email.getMessagemEmail());
+                out.println(email.getMessagemEmail()); // envia a mensagem
+                
+                cancela = true;
+                System.out.println("Mensagem enviada");
+            }
+            
+        }while (!cancela);
     }
     
     public static void main(String[] args) {
