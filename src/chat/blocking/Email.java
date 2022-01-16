@@ -14,11 +14,44 @@ public class Email {
     private String assuntoEmail;
     private String messagemEmail;
     private String cancelaEmail;
+    //private boolean RecebeuEmailEnvio;
+    //private boolean RecebeuEmailChegada;
+    
     private boolean RecebeuEmail;
+    
+    private String enderecoEmailRemetente;
+    private boolean emailEnvio;
+    private boolean emailChegada;
+    
+    public Email() {}
+    
+    public Email(String enderecoEmail, String assuntoEmail, String messagemEmail) {
+        this.enderecoEmail = enderecoEmail;
+        this.assuntoEmail = assuntoEmail;
+        this.messagemEmail = messagemEmail;
+    }
+    
+    public boolean isRecebeuEmail() {
+        return RecebeuEmail;
+    }
+
+    public void setRecebeuEmail(boolean RecebeuEmail) {
+        this.RecebeuEmail = RecebeuEmail;
+    }
+
+    /*
+    public boolean isRecebeuEmailChegada() {
+        return RecebeuEmailChegada;
+    }
+
+    public void setRecebeuEmailChegada(boolean RecebeuEmailChegada) {
+        this.RecebeuEmailChegada = RecebeuEmailChegada;
+    }
+*/
     
     public String getEnderecoEmail() {
         if(enderecoEmail != null && !(enderecoEmail.equals("")) ){
-            return "Email:" +enderecoEmail;
+            return "Email Envio:" +enderecoEmail;
         }else{
             return null;
         }
@@ -60,13 +93,40 @@ public class Email {
     public void setCancelaEmail(String cancelaEmail) {
         this.cancelaEmail = cancelaEmail;
     }
-    
-    public boolean isRecebeuEmail() {
-        return RecebeuEmail;
+    /*
+    public boolean isRecebeuEmailEnvio() {
+        return RecebeuEmailEnvio;
     }
 
-    public void setRecebeuEmail(boolean RecebeuEmail) {
-        this.RecebeuEmail = RecebeuEmail;
+    public void setRecebeuEmailEnvio(boolean RecebeuEmail) {
+        this.RecebeuEmailEnvio = RecebeuEmail;
+    }
+    */
+    public String getEnderecoEmailRemetente() {
+        if(enderecoEmailRemetente != null && !(enderecoEmailRemetente.equals(""))){
+            return "Email Remetente: " +enderecoEmailRemetente;
+        }else{
+            return null;
+        }
+    }
+
+    public void setEnderecoEmailRemetente(String enderecoEmailRemetente) {
+        this.enderecoEmailRemetente = enderecoEmailRemetente;
     }
     
+    public boolean isEmailEnvio() {
+        return emailEnvio;
+    }
+
+    public void setEmailEnvio(boolean emailEnvio) {
+        this.emailEnvio = emailEnvio;
+    }
+
+    public boolean isEmailChegada() {
+        return emailChegada;
+    }
+
+    public void setEmailChegada(boolean emailChegada) {
+        this.emailChegada = emailChegada;
+    }
 }

@@ -41,6 +41,8 @@ public class ChatClient {
     public void start() throws IOException{
         clientSocket = new Socket(SERVER_ADDRESS, ChatServer.PORT);
         this.out = new PrintWriter(clientSocket.getOutputStream(), true); // envia mensagem para o servidor
+        
+        System.out.println("clientSocket.getOutputStream(): "+clientSocket.getOutputStream());
         System.out.println("Cliente conectado ao servidor em "+ SERVER_ADDRESS + ":" +ChatServer.PORT);
         messageLoop();
     }
