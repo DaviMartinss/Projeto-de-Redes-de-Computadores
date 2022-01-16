@@ -10,12 +10,21 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Scanner;
 
 /**
  *
  * @author Davi
  */
 public class ChatServer {
+    
+    private static void clearBuffer(Scanner scanner) {
+       
+        if (scanner.hasNextLine()) {
+            scanner.nextLine();
+        }
+    }
+    
     public static final int PORT = 4000;
     private ServerSocket serverSockert;
     Email emailServer = new Email();
@@ -38,10 +47,11 @@ public class ChatServer {
     public void clientMessageLoop(ClientSocket clientSocket){
         String msg;
         emailServer.setRecebeuEmail(true);
+        
         try{
             while((msg = clientSocket.getMessage()) != null){
-                
-                if(msg == null){
+                System.out.println("msg = "+msg);
+                if(msg.equals("null")){
                     emailServer.setRecebeuEmail(false);
                 }else{
                     // recebeu email

@@ -26,6 +26,14 @@ public class ChatClient {
     private Scanner scanner;
     private PrintWriter out;
     
+    // limparBuffer
+    private static void clearBuffer(Scanner scanner) {
+       
+        if (scanner.hasNextLine()) {
+            scanner.nextLine();
+        }
+    }
+     
     public ChatClient(){
         scanner = new Scanner(System.in, "Cp1252");
     }
@@ -45,13 +53,17 @@ public class ChatClient {
         do{
             System.out.print("Endereço email que vai enviar: ");
             email.setEnderecoEmail(scanner.nextLine());
+            clearBuffer(scanner);
+            
             System.out.print("Assunto: ");
             email.setAssuntoEmail(scanner.nextLine());
+            clearBuffer(scanner);
+            
             System.out.print("Mensagem: ");
             email.setMessagemEmail(scanner.nextLine());
+            clearBuffer(scanner);
             
             System.out.println("Você deseja cancelar o envio do Email? Sim/Não");
-           
             email.setCancelaEmail(scanner.nextLine());
             
             
@@ -59,13 +71,10 @@ public class ChatClient {
                 cancela = true;
                 System.out.println("Envio cancelado");
             }else{
-                System.out.println("email: "+email.getEnderecoEmail());
                 out.println(email.getEnderecoEmail()); // envia a mensagem
-                
-                //System.out.println("assunto: "+email.getAssuntoEmail());
+                System.out.println("Email enviado: "+email.getEnderecoEmail());
                 out.println(email.getAssuntoEmail()); // envia a mensagem
                 
-                //System.out.println("corpo: "+email.getMessagemEmail());
                 out.println(email.getMessagemEmail()); // envia a mensagem
                 
                 cancela = true;
