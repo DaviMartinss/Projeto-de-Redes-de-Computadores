@@ -8,6 +8,8 @@ package chat.blocking;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -16,9 +18,9 @@ import java.util.Scanner;
  */
 public class ChatClient implements Runnable {
     private final String SERVER_ADDRESS = "127.0.0.1";
-    private ClientSocket clientSocket;
+    public ClientSocket clientSocket;
     private final Scanner scanner;
-    private boolean recebeEmail = true;
+    public Email emailRecebido = new Email();
     
     public ChatClient(){
         scanner = new Scanner(System.in);
@@ -32,9 +34,9 @@ public class ChatClient implements Runnable {
         } catch (IOException ex) {
             System.out.println("Erro ao iniciar o clientt: "+ex.getMessage());
         }
-        System.out.println("Cliente Finalizado");
+        //System.out.println("Cliente Finalizado");
     }
-    
+
     public void start() throws IOException, InterruptedException{
         final Socket socket = new Socket(SERVER_ADDRESS, ChatServer.PORT);
         
@@ -42,11 +44,34 @@ public class ChatClient implements Runnable {
         
         System.out.println("Cliente conectado ao servidor em "+ SERVER_ADDRESS + ":" +ChatServer.PORT);
 
-        messageLoop();
+        //messageLoop();
         
-        //if(this.recebeEmail)
+    }
+    
+    public void MessageLoopTela(String enderecoDestino, String titulo, String mensagem, boolean enviarEmail) throws IOException, InterruptedException{
+        Email email = new Email();
+        
+        if(!enviarEmail){
             
-        
+            new Thread(this).start();
+        }
+        else
+        {
+
+            email.setEnderecoEmail(enderecoDestino);
+            System.out.print("Assunto: ");
+            email.setAssuntoEmail(titulo);
+            System.out.print("Mensagem: ");
+            email.setMessagemEmail(mensagem);
+
+            if (clientSocket.sendMail(email)) {
+                System.out.println("Mensagem enviada");
+            }
+
+            clientSocket.close();
+
+            //scanner.close();
+        }
     }
     
     private void messageLoop() throws IOException, InterruptedException{
@@ -74,11 +99,9 @@ public class ChatClient implements Runnable {
                 System.out.print("Mensagem: ");
                 email.setMessagemEmail(scanner.nextLine());
 
-                if (clientSocket.sendMail(email)) {
+                if (clientSocket.sendMail(email))
                     System.out.println("Mensagem enviada");
-                    this.recebeEmail = false;
-                }
-
+               
                 System.out.print("Digite 'sair' para encerrar): ");
                 verificaSaida = scanner.nextLine();
 
@@ -99,14 +122,26 @@ public class ChatClient implements Runnable {
     public void run() {
         
         String msg;
-        if (clientSocket.getMessage() != null) {
-            System.out.println();
-            System.out.println("--- EMAIL:RECEBIDO ---");
-            while ((msg = clientSocket.getMessage()) != null) {
-
-                System.out.println(msg);
+        
+//        if (this.clientSocket.getMessage() != null) {
+            //JOptionPane.showMessageDialog(null, "--- EMAIL:RECEBIDO ---", "RECEBEU EMAIL", JOptionPane.INFORMATION_MESSAGE);
+            
+            //System.out.println("--- EMAIL:RECEBIDO ---");
+            while ((msg = this.clientSocket.getMessage()) != null) {
+                
+                if (msg.contains("Email")) {
+                    this.emailRecebido.setEnderecoEmail(msg.split("Email:")[1]);
+                    
+                } else if (msg.contains("Assunto")) {
+                    this.emailRecebido.setAssuntoEmail(msg.split("Assunto:")[1]);
+                }
+                else if (msg.contains("Mensagem")){
+                    this.emailRecebido.setMessagemEmail(msg);
+                }
             }
-        }
-        clientSocket.close();
+//        }
+        
+        //clientSocket.close();
+        
     }
 }
