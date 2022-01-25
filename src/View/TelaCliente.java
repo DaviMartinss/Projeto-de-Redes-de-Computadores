@@ -6,9 +6,13 @@
 package View;
 
 import chat.blocking.ChatClient;
+import chat.blocking.ChatServer;
+import chat.blocking.ClientSocket;
 import chat.blocking.Email;
 import com.sun.security.ntlm.Client;
 import java.io.IOException;
+import java.net.Socket;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -17,9 +21,9 @@ import javax.swing.JOptionPane;
  *
  * @author Alan
  */
-public class TelaCliente extends javax.swing.JFrame implements Runnable {
+public class TelaCliente extends javax.swing.JFrame implements Runnable{
 
-    private ChatClient client = null;
+    public ChatClient chatClient = new ChatClient();;
     
     /**
      * Creates new form TelaCliente
@@ -29,11 +33,9 @@ public class TelaCliente extends javax.swing.JFrame implements Runnable {
     public TelaCliente() throws IOException, InterruptedException {
         initComponents();
         
-        client = new ChatClient();
-        
-        client.start();
-        
     }
+    
+    
     
     public void DesabilitaEnvioEmail(){
         txtEnderecoDestino.setEnabled(false);
@@ -76,8 +78,18 @@ public class TelaCliente extends javax.swing.JFrame implements Runnable {
         jScrollPane2 = new javax.swing.JScrollPane();
         txtAMensagemRecebido = new javax.swing.JTextArea();
         btnReceber = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        txtEnderecoRemetente = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                formWindowClosed(evt);
+            }
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         btnEnviar.setText("Enviar Email");
         btnEnviar.addActionListener(new java.awt.event.ActionListener() {
@@ -126,6 +138,9 @@ public class TelaCliente extends javax.swing.JFrame implements Runnable {
             }
         });
 
+        jLabel4.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        jLabel4.setText("Endereco que enviou: ");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -148,7 +163,7 @@ public class TelaCliente extends javax.swing.JFrame implements Runnable {
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(58, 58, 58)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 82, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 91, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnEnviar, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnLimpar, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -159,17 +174,22 @@ public class TelaCliente extends javax.swing.JFrame implements Runnable {
                 .addComponent(jSeparator1)
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
-                .addGap(45, 45, 45)
+                .addGap(44, 44, 44)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(89, 89, 89)
-                        .addComponent(txtTituloRecebido, javax.swing.GroupLayout.PREFERRED_SIZE, 274, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(58, 58, 58)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 302, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                            .addComponent(jLabel4)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(txtEnderecoRemetente))
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(89, 89, 89)
+                            .addComponent(txtTituloRecebido, javax.swing.GroupLayout.PREFERRED_SIZE, 274, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(256, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -197,7 +217,11 @@ public class TelaCliente extends javax.swing.JFrame implements Runnable {
                         .addComponent(btnReceber, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(20, 20, 20)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(31, 31, 31)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtEnderecoRemetente, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtTituloRecebido, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -205,7 +229,7 @@ public class TelaCliente extends javax.swing.JFrame implements Runnable {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(60, Short.MAX_VALUE))
+                .addGap(21, 21, 21))
         );
 
         pack();
@@ -221,7 +245,7 @@ public class TelaCliente extends javax.swing.JFrame implements Runnable {
 
             String mensagem = txtAMensagem.getText();
 
-            client.MessageLoopTela(enderecoDestino, titulo, mensagem, true);
+            chatClient.MessageLoopTela(enderecoDestino, titulo, mensagem, true);
 
             LimparCampos();
 
@@ -241,25 +265,36 @@ public class TelaCliente extends javax.swing.JFrame implements Runnable {
     }//GEN-LAST:event_btnLimparActionPerformed
 
     private void btnReceberActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReceberActionPerformed
+        
+        DesabilitaEnvioEmail();
+            
+        //chatClient.MessageLoopTela(null, null, null, false);
+        
+        new Thread(this).start();
+        
+        
+        
+        //new Thread(this).start();
+    }//GEN-LAST:event_btnReceberActionPerformed
+
+    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
+
+        
+    }//GEN-LAST:event_formWindowClosed
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
 
         try {
-            DesabilitaEnvioEmail();
-            client.MessageLoopTela(null, null, null, false);
-            
-            String lala = "";
-            
-             new Thread(this).start();
-            
+            chatClient.start();
         } catch (IOException | InterruptedException ex) {
             Logger.getLogger(TelaCliente.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-    }//GEN-LAST:event_btnReceberActionPerformed
+    }//GEN-LAST:event_formWindowOpened
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    public static void main(String args[]){
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -300,6 +335,7 @@ public class TelaCliente extends javax.swing.JFrame implements Runnable {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;
@@ -308,39 +344,43 @@ public class TelaCliente extends javax.swing.JFrame implements Runnable {
     private javax.swing.JTextArea txtAMensagem;
     private javax.swing.JTextArea txtAMensagemRecebido;
     private javax.swing.JTextField txtEnderecoDestino;
+    private javax.swing.JTextField txtEnderecoRemetente;
     private javax.swing.JTextField txtTitulo;
     private javax.swing.JTextField txtTituloRecebido;
     // End of variables declaration//GEN-END:variables
 
-    public void Recebeu(Email email) {
-
-        txtTitulo.setText(this.client.emailRecebido.getAssuntoEmail());
-        txtAMensagem.setText(this.client.emailRecebido.getMessagemEmail());
-
-    }
-
     @Override
     public void run() {
-        
+    
         String msg;
-        if (this.client.emailRecebido != null) {
-            JOptionPane.showMessageDialog(null, "--- EMAIL:RECEBIDO ---", "RECEBEU EMAIL", JOptionPane.INFORMATION_MESSAGE);
+        if (chatClient.clientSocket.getMessage() != null) {
+            System.out.println();
+            System.out.println("--- EMAIL:RECEBIDO ---");
             
-            //System.out.println("--- EMAIL:RECEBIDO ---");
-//            while ((msg = this.client.clientSocket.getMessage()) != null) {
-//                
-//                if (msg.contains("Assunto")) {
-//                    txtTitulo.setText(msg.split("Email:")[1]);
-//                } else {
-//                    txtAMensagem.setText(msg.split("Mensagem:")[1]);
-//                }
-//            }
+            while ((msg = chatClient.clientSocket.getMessage()) != null) {
 
-        this.txtTitulo.setText(this.client.emailRecebido.getAssuntoEmail());
-        this.txtAMensagem.setText(this.client.emailRecebido.getMessagemEmail());
-
-
+                System.out.println(msg);
+                
+                if(msg.contains("Remetente"))
+                {
+                    txtEnderecoRemetente.setText(msg.split("Remetente:Remetente:")[1]);
+                }
+                
+                if (msg.contains("Assunto")) 
+                {
+                    
+                    txtTituloRecebido.setText(msg.split("Assunto:Assunto:")[1]);
+                    
+                }
+                
+                if (msg.contains("Mensagem")){
+                   
+                   txtAMensagemRecebido.setText(msg.split("Mensagem:Mensagem:")[1]);
+                }
+            }
         }
-        this.client.clientSocket.close();
+       
+        chatClient.clientSocket.close();
+        
     }
 }

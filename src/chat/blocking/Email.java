@@ -11,10 +11,24 @@ package chat.blocking;
  */
 public class Email {
     private String enderecoEmail;
+    private String enderecoRemetente;
     private String assuntoEmail;
     private String messagemEmail;
     private String cancelaEmail;
     private boolean RecebeuEmail;
+
+    public String getEnderecoRemetente() {
+        if(enderecoRemetente != null && !(enderecoRemetente.equals("")) ){
+            return "Remetente:" +enderecoRemetente;
+        }else{
+            return null;
+        }
+    }
+
+    public void setEnderecoRemetente(String enderecoRemetente) {
+        
+        this.enderecoRemetente = enderecoRemetente;
+    }
     
     public String getEnderecoEmail() {
         if(enderecoEmail != null && !(enderecoEmail.equals("")) ){

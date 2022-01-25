@@ -28,6 +28,10 @@ public class ClientSocket {
         return socket.getRemoteSocketAddress();
     }
     
+    public SocketAddress getLocalSocketAddress(){
+        return socket.getLocalSocketAddress();
+    }
+    
     public void close(){
         try{
         in.close();
@@ -53,13 +57,17 @@ public class ClientSocket {
     }
     
     public boolean sendMail(Email email) {
-
+        
+        out.println();
+        
         out.println(email.getEnderecoEmail());
-
+        
         out.println(email.getAssuntoEmail());
+        
+        out.println(email.getEnderecoRemetente());
 
         out.println(email.getMessagemEmail());
-
+        
         return !out.checkError();
     }
 }

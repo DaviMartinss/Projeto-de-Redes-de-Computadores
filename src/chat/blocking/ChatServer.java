@@ -31,6 +31,7 @@ public class ChatServer {
         serverSocket = new ServerSocket(PORT);
         System.out.println("Servidor iniciado na porta "+PORT);
         clientConnectionLoop();
+        
     }
     
    private void clientConnectionLoop() throws IOException{
@@ -80,11 +81,25 @@ public class ChatServer {
                 }else{
                     // recebeu email 
                     if(msg.contains("Email")){
+                        
                         emailServer.setEnderecoEmail(msg.split("Email:")[1]);
                         
-                    }else if(msg.contains("Assunto")){
+                    }
+                    
+                    if(msg.contains("Assunto")){
+                        
                         emailServer.setAssuntoEmail(msg.split("Assunto:")[1]);
-                    }else{
+                        
+                    }
+                    
+                    if (msg.contains("Remetente")){
+                    
+                        emailServer.setEnderecoRemetente(msg.split("Remetente:")[1]);
+                    
+                    }
+                    
+                    if (msg.contains("Mensagem")){
+                        
                         emailServer.setMessagemEmail(msg.split("Mensagem:")[1]);
                     }
                 }
@@ -92,6 +107,7 @@ public class ChatServer {
 
             if(emailServer.isRecebeuEmail()){
                 System.out.println(emailServer.getEnderecoEmail());
+                System.out.println(emailServer.getEnderecoRemetente());
                 System.out.println(emailServer.getAssuntoEmail());
                 System.out.println(emailServer.getMessagemEmail());
             }else{
@@ -121,6 +137,12 @@ public class ChatServer {
              enderecoClient = client.getRemoteSocketAddress().toString();
              
             if (!client.equals(sender) && enderecoClient.equals(enderecoDestino)) {
+                
+                email.setEnderecoEmail(email.getEnderecoEmail());
+                email.setEnderecoRemetente(email.getEnderecoRemetente());
+                email.setAssuntoEmail(email.getAssuntoEmail());
+                email.setMessagemEmail(email.getMessagemEmail());
+                
                 if(client.sendMail(email))
                     count++;
                 else iterator.remove();
